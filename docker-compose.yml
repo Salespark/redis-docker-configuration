@@ -1,0 +1,25 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-server
+    command: redis-server /var/redis.conf
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      retries: 3
+      timeout: 5s
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - ./redis-data:/data
+      - ./redis.conf:/var/redis.conf
+      - ./users.acl:/var/users.acl
+    logging:
+      options:
+        max-size: 1g
+
+volumes:
+  redis-data:
+networks:
+  default:
+    name: local
